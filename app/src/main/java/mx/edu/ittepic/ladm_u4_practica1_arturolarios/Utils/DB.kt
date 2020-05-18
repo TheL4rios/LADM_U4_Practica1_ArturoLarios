@@ -26,6 +26,9 @@ class DB(context : Context) : SQLiteOpenHelper(context, "MESSAGES", null, 1)
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
+        // 1 -> good message
+        // 0 -> bad message
+
         var sql = "CREATE TABLE MESSAGES(" +
                       "idMessage INTEGER PRIMARY KEY AUTOINCREMENT," +
                       "message VARCHAR(2000)," +
@@ -35,15 +38,16 @@ class DB(context : Context) : SQLiteOpenHelper(context, "MESSAGES", null, 1)
 
         sql = "CREATE TABLE CONTACTS(" +
                     "idContact INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "name VARCHAR(200)" +
+                    "name VARCHAR(200)," +
+                    "type INTEGER" +
               ")"
         db?.execSQL(sql)
 
         sql = "CREATE TABLE NUMBERS(" +
-                "idNumber INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "idContact INTEGER," +
-                "number VARCHAR(20)," +
-                "FOREIGN KEY(idContact) REFERENCES CONTACTS(idContact)" +
+                    "idNumber INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "idContact INTEGER," +
+                    "number VARCHAR(50)," +
+                    "FOREIGN KEY(idContact) REFERENCES CONTACTS(idContact)" +
                 ")"
         db?.execSQL(sql)
     }

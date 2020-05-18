@@ -120,7 +120,7 @@ class WriteMessageActivity : AppCompatActivity() {
             dataGood.put("message", txtMessageGood.text.toString())
             dataGood.put("type", 1)
 
-            var answer = insert?.insert(DB.MESSAGES, "idActivity", dataGood)
+            var answer = insert?.insert(DB.MESSAGES, "idMessage", dataGood)
 
             if(answer?.toInt() == -1)
             {

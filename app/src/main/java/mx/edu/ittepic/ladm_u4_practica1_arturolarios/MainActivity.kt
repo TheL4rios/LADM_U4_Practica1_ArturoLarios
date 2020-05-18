@@ -112,8 +112,7 @@ class MainActivity : AppCompatActivity() {
             data.add("Nombre: ${p.name}\nTelefono(s):\n${p.number}")
         }
 
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, data)
-        contactsList.adapter = adapter
+        contactsList.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, data)
 
         contactsList.setOnItemClickListener { _, _, position, _ ->
             AlertDialog.Builder(this)
