@@ -82,7 +82,7 @@ class AddContactActivity : AppCompatActivity() {
 
         if (answer == 0)
         {
-            Utils.showAlertMessage("Error", "Algo salió mal, vuelva a intentarlo", this)
+            Utils.showAlertMessage("Error", "Algo salió mal, no se pudo actualizar", this)
             return
         }
 
@@ -108,7 +108,7 @@ class AddContactActivity : AppCompatActivity() {
 
             if(answer?.toInt() == -1)
             {
-                Utils.showAlertMessage("Error", "Algo salió mal, vuelva a intentarlo", this)
+                Utils.showAlertMessage("Error", "Algo salió mal, no se pudo insertar", this)
             }
             else
             {
@@ -117,7 +117,7 @@ class AddContactActivity : AppCompatActivity() {
 
                 if (id == -1)
                 {
-                    Utils.showAlertMessage("Error", "Algo salió mal, vuelva a intentarlo", this)
+                    Utils.showAlertMessage("Error", "Algo salió mal, no se pudo insertar", this)
                     return
                 }
 
@@ -130,7 +130,7 @@ class AddContactActivity : AppCompatActivity() {
 
                     if (answer?.toInt() == -1)
                     {
-                        Utils.showAlertMessage("Error", "Algo salió mal, vuelva a intentarlo", this)
+                        Utils.showAlertMessage("Error", "Algo salió mal, no se pudo insertar", this)
                         return
                     }
                 }
@@ -140,7 +140,7 @@ class AddContactActivity : AppCompatActivity() {
         }
         catch(e : SQLiteException)
         {
-            Utils.showAlertMessage("Error", "Algo salió mal, vuelva a intentarlo", this)
+            Utils.showAlertMessage("Error", "Algo salió mal, no se pudo insertar", this)
         }
     }
 
