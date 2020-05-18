@@ -36,10 +36,11 @@ class AddContactActivity : AppCompatActivity() {
 
         val id = extra?.getInt("id")
 
-        id?.let {
+        if (id != 0)
+        {
             update = true
             this.title = "Modificar Contacto de la lista"
-            val selection = if (extra.getInt("type") == 0) 2 else 1
+            val selection = if (extra?.getInt("type") == 0) 2 else 1
             spinner.setSelection(selection)
         }
 
