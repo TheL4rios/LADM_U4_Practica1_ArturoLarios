@@ -17,10 +17,12 @@ class AddContactActivity : AppCompatActivity() {
 
     private var type = 0
     private val db = DB.getInstance(this)
+    private var update = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_contact)
+        this.title = "Agregar Contacto"
 
         initialize()
     }
@@ -30,8 +32,16 @@ class AddContactActivity : AppCompatActivity() {
         val extra = intent.extras
         txtName.setText(extra?.getString("name"))
         txtPhones.setText(extra?.getString("number")?.substring(0, extra.getString("number")!!.length - 1))
-
         initializeSpinner()
+
+        val id = extra?.getInt("id")
+
+        id?.let {
+            update = true
+            this.title = "Modificar Contacto de la lista"
+            val selection = if (extra.getInt("type") == 0) 2 else 1
+            spinner.setSelection(selection)
+        }
 
         btnSaveContact.setOnClickListener {
             if (type == 0)
@@ -44,11 +54,39 @@ class AddContactActivity : AppCompatActivity() {
                 .setTitle("Atención")
                 .setMessage("¿Está seguro de esta acción?")
                 .setPositiveButton("SI"){_, _ ->
-                    saveContact()
+                    if (update)
+                        updateContact(id)
+                    else
+                        saveContact()
                 }
                 .setNegativeButton("NO"){_, _ ->}
                 .show()
         }
+    }
+
+    private fun updateContact(id : Int?)
+    {
+        val update = db?.writableDatabase
+
+        val data = ContentValues()
+        data.put("name", txtName.text.toString())
+
+        when(type)
+        {
+            1 -> data.put("type", 1)
+            2 -> data.put("type", 0)
+        }
+
+        val answer = update?.update(DB.CONTACTS, data, "idContact=?", arrayOf(id?.toString()))
+
+        if (answer == 0)
+        {
+            Utils.showAlertMessage("Error", "Algo salió mal, vuelva a intentarlo", this)
+            return
+        }
+
+        Utils.showToastMessageLong("Se actualizó correctamente", this)
+        finish()
     }
 
     private fun saveContact()
@@ -124,7 +162,7 @@ class AddContactActivity : AppCompatActivity() {
 
     private fun initializeSpinner()
     {
-        val options = arrayOf("Escoja tipo de mensaje", "Agradable", "Desagradable")
+        val options = arrayOf("Escoja tipo de mensaje", "Deseado", "Indeseado")
 
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, options)
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
