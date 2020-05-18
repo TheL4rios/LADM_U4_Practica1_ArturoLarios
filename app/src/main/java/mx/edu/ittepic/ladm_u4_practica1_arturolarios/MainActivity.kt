@@ -12,20 +12,24 @@ import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import kotlinx.android.synthetic.main.activity_main.*
+import mx.edu.ittepic.ladm_u3_practica1_arturolarios.Utils.DB
 import mx.edu.ittepic.ladm_u3_practica1_arturolarios.Utils.Utils
+import mx.edu.ittepic.ladm_u4_practica1_arturolarios.Service.MessagesService
 
 class MainActivity : AppCompatActivity() {
 
     object Constants {
         const val READ_CONTACTS_SUCCESS = 1
+        const val READ_CALL_LOGS = 2
+        const val SEND_SMS = 3
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         this.title = "Lista de Contactos"
-
         grantPermission()
+        startService(Intent(this, MessagesService :: class.java))
     }
 
     override fun onResume() {
@@ -56,7 +60,10 @@ class MainActivity : AppCompatActivity() {
         {
             R.id.writeMessages -> startActivity(Intent(this, WriteMessageActivity :: class.java))
             R.id.showContacts -> startActivity(Intent(this, ShowContactsActivity :: class.java))
-            R.id.quit -> finish()
+            R.id.quit -> {
+                stopService(Intent(this, MessagesService :: class.java))
+                finish()
+            }
         }
 
         return super.onOptionsItemSelected(item)
@@ -119,24 +126,58 @@ class MainActivity : AppCompatActivity() {
                 .setTitle("Contacto")
                 .setMessage("${data[position]}\n¿Desea agregar este contacto a la lista?")
                 .setPositiveButton("SI"){_, _ ->
-                    val addContact = Intent(this, AddContactActivity :: class.java)
+                    if (isValid())
+                    {
+                        val addContact = Intent(this, AddContactActivity :: class.java)
 
-                    addContact.putExtra("name", phones[position].name)
-                    addContact.putExtra("number", phones[position].number)
+                        addContact.putExtra("name", phones[position].name)
+                        addContact.putExtra("number", phones[position].number)
 
-                    startActivity(addContact)
+                        startActivity(addContact)
+                    }
                 }
                 .setNegativeButton("NO"){_, _ ->}
                 .show()
         }
     }
 
+    private fun isValid() : Boolean
+    {
+        val select = DB.getInstance(this)?.readableDatabase
+
+        val cursor = select?.query(DB.MESSAGES, arrayOf("*"), null, null, null, null, null)
+
+        cursor?.let { c ->
+            if (c.moveToFirst())
+            {
+                c.close()
+                c.close()
+                return true
+            }
+        }
+
+        Utils.showAlertMessage("Atención", "Primero debe agregar los mensajes a enviar", this)
+        return false
+    }
+
     private fun grantPermission()
     {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_CALL_LOG) !=
+                PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_CALL_LOG), Constants.READ_CALL_LOGS)
+        }
+
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_CONTACTS) !=
             PackageManager.PERMISSION_GRANTED)
         {
             ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_CONTACTS), Constants.READ_CONTACTS_SUCCESS)
+        }
+
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.SEND_SMS) !=
+                PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.SEND_SMS), Constants.SEND_SMS)
         }
     }
 }

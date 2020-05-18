@@ -103,6 +103,7 @@ class WriteMessageActivity : AppCompatActivity() {
                     return
                 }
                 Utils.showToastMessageLong("Se actualizó correctamente", this)
+                finish()
             }
         }
         catch(e : SQLiteException)
@@ -142,6 +143,7 @@ class WriteMessageActivity : AppCompatActivity() {
                     return
                 }
                 Utils.showToastMessageLong("Se insertó correctamente", this)
+                finish()
             }
         }
         catch(e : SQLiteException)
