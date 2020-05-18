@@ -1,5 +1,6 @@
 package mx.edu.ittepic.ladm_u4_practica1_arturolarios
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.database.sqlite.SQLiteException
 import androidx.appcompat.app.AppCompatActivity
@@ -104,6 +105,7 @@ class AddContactActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("Recycle")
     private fun getLastContact() : Int
     {
         val select = db?.readableDatabase

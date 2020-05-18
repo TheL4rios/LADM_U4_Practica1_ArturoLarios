@@ -55,8 +55,8 @@ class MainActivity : AppCompatActivity() {
         when (item.itemId)
         {
             R.id.writeMessages -> startActivity(Intent(this, WriteMessageActivity :: class.java))
-            R.id.showContacts -> {}
-            R.id.quit -> {}
+            R.id.showContacts -> startActivity(Intent(this, ShowContactsActivity :: class.java))
+            R.id.quit -> finish()
         }
 
         return super.onOptionsItemSelected(item)
