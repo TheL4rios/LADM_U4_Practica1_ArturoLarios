@@ -1,10 +1,13 @@
 package mx.edu.ittepic.ladm_u4_practica1_arturolarios
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
@@ -43,6 +46,22 @@ class MainActivity : AppCompatActivity() {
         Utils.showToastMessageLong("Algó salió mal, por favor vuelva a intentarlo", this)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId)
+        {
+            R.id.writeMessages -> startActivity(Intent(this, WriteMessageActivity :: class.java))
+            R.id.showContacts -> {}
+            R.id.quit -> {}
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
     @SuppressLint("Recycle")
     private fun fillList()
     {
@@ -78,6 +97,10 @@ class MainActivity : AppCompatActivity() {
 
                 showList(phones)
             }
+            else
+            {
+                Utils.showToastMessageLong("No cuenta con contactos registrados en el móvil", this)
+            }
         }
     }
 
@@ -97,7 +120,12 @@ class MainActivity : AppCompatActivity() {
                 .setTitle("Contacto")
                 .setMessage("${data[position]}\n¿Desea agregar este contacto a la lista?")
                 .setPositiveButton("SI"){_, _ ->
+                    val addContact = Intent(this, AddContactActivity :: class.java)
 
+                    addContact.putExtra("name", phones[position].name)
+                    addContact.putExtra("number", phones[position].number)
+
+                    startActivity(addContact)
                 }
                 .setNegativeButton("NO"){_, _ ->}
                 .show()
